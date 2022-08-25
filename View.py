@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ACTIVE, DISABLED, ttk
 
 class View(ttk.Frame):
 
@@ -29,13 +29,14 @@ class View(ttk.Frame):
             self.controller.checkEntryTime(event.widget._name, _string_EntryTime)
 
             #check which calculation mode is needed
-            self.controller.checkCalcuationMethod(_string_StartTime.get(), _string_LeaveTime.get(), _string_WorkingTime.get(), _string_BreakTime.get())
+            self.controller.doStateMachineMagic(_string_StartTime.get(), _string_LeaveTime.get(), _string_WorkingTime.get(), _string_BreakTime.get())
+            self.controller.calculateTime()
 
     def __init__(self, parent):
         super().__init__(parent)
 
         #root window
-        parent.geometry('280x130')
+        parent.geometry('300x130')
         parent.resizable(False, False)
         parent.title(self._text_title)
 
@@ -50,19 +51,19 @@ class View(ttk.Frame):
         _string_BreakTime.set("00:50")
 
         #label: StartTime
-        self.label_StartTime = ttk.Label(parent, text=self._text_StartTime)
+        self.label_StartTime = ttk.Label(parent, text=self._text_StartTime, font='CorpoA 11')
         self.label_StartTime.grid(column=0, row=0, sticky=tk.W, padx=5, pady=5)
 
         #label: LeaveTime
-        self.label_LeaveTime = ttk.Label(parent, text=self._text_LeaveTime)
+        self.label_LeaveTime = ttk.Label(parent, text=self._text_LeaveTime, font='CorpoA 11')
         self.label_LeaveTime.grid(column=0, row=1, sticky=tk.W, padx=5, pady=5)
 
         #label: WorkingTime
-        self.label_WorkingTime = ttk.Label(parent, text=self._text_WorkingTime)
+        self.label_WorkingTime = ttk.Label(parent, text=self._text_WorkingTime, font='CorpoA 11')
         self.label_WorkingTime.grid(column=0, row=2, sticky=tk.W, padx=5, pady=5)
 
         #label: BreakTime
-        self.label_BreakTime = ttk.Label(parent, text=self._text_BreakTime)
+        self.label_BreakTime = ttk.Label(parent, text=self._text_BreakTime, font='CorpoA 11')
         self.label_BreakTime.grid(column=0, row=3, sticky=tk.W, padx=5, pady=5)
 
         #entry: StartTime
@@ -87,6 +88,22 @@ class View(ttk.Frame):
 
         self.controller = None
 
+    def reset_labels(self):
+        # reset to non-bold labels
+        self.label_StartTime.configure(font='CorpoA 11')
+        self.label_LeaveTime.configure(font='CorpoA 11')
+        self.label_WorkingTime.configure(font='CorpoA 11')
+
+    def highlight_label(self, control):
+        self.reset_labels()
+
+        if(control == 'startLabel'):
+            self.label_StartTime.configure(font='CorpoA 11 bold')
+        elif(control == 'leaveLabel'):
+            self.label_LeaveTime.configure(font='CorpoA 11 bold')
+        elif(control == 'workingLabel'):
+            self.label_WorkingTime.configure(font='CorpoA 11 bold')
+
     def show_success(self, control):
         if(control == 'startEntry'):
             self.entry_StartTime['foreground'] = 'green'
@@ -98,6 +115,7 @@ class View(ttk.Frame):
             self.entry_BreakTime['foreground'] = 'green'
 
     def show_error(self, control):
+
         if(control == 'startEntry'):
             self.entry_StartTime['foreground'] = 'red'
         elif(control == 'leaveEntry'):
