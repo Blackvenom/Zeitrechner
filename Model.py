@@ -60,4 +60,4 @@ class Model:
         return self._intBreakMinutes
     @intBreakMinutes.setter
     def intBreakMinutes(self, value):
-        self._intBreakMinutes = value   
+        self._intBreakMinutes = value
