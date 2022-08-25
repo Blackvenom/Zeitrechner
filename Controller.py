@@ -6,8 +6,16 @@ class Controller:
     def checkEntryTime(self, entry, strTime):
         try:
             if(strTime):
-                hours = int(strTime[:2])
-                minutes = int(strTime[3:])
+                # time-format 'hh:mm'
+                if(':' in strTime):
+                    hours = int(strTime[:2])
+                    minutes = int(strTime[3:])
+                # time-format 'hhmm'
+                elif(len(strTime)==4):
+                    hours = int(strTime[:2])
+                    minutes = int(strTime[2:])
+                    #apply new format to view
+                    self.view.show_time(entry, f"{strTime[:2].rjust(2, '0')}:{strTime[2:].rjust(2, '0')}")
                 if(hours < 0 or hours > 23) or (minutes < 0 or minutes > 59):
                     self.view.show_error(entry)
                 else:
