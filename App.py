@@ -20,9 +20,6 @@ class App(tk.Tk):
         # set the controller to view
         view.set_controller(controller)
 
-        print('commit test added here!')
-
-
 if __name__ == '__main__':
     app = App()
     app.mainloop()
