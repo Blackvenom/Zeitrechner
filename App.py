@@ -13,6 +13,7 @@ class App(tk.Tk):
         # create a view and place it on the root window
         view = View.View(self)
         view.grid(row=0, column=0, padx=10, pady=10)
+        view.columnconfigure(tuple(range(2)), weight=1)
 
         # create a controller
         controller = Controller.Controller(model, view)
