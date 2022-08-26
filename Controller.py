@@ -1,5 +1,3 @@
-from enum import Enum
-
 class State():
     IDLE = 1
     STARTTIMEMODE = 2
@@ -80,7 +78,7 @@ class Controller:
                 self.state = State.LEAVETIMEMODE
             elif( _strStartTime and _strLeaveTime and not _strWorkingTime):
                 self.state = State.WORKINGTIMEMODE
-            elif( not _strStartTime and not _strLeaveTime and not _strWorkingTime):
+            elif( not _strStartTime and _strLeaveTime and _strWorkingTime):
                 self.state = State.STARTTIMEMODE
 
     def calculateTime(self):
@@ -88,8 +86,10 @@ class Controller:
             if(self.state == State.IDLE): 
                 return
             elif(self.state == State.STARTTIMEMODE):
-                print('todo: Modus: Start-Zeit ermitteln')
+                #calculate start time
                 self.calculateStartTime()
+                #output start time
+                self.view.show_time('startEntry', f"{str(self.model.intStartHours).rjust(2, '0')}:{str(self.model.intStartMinutes).rjust(2, '0')}")
             elif(self.state == State.LEAVETIMEMODE):
                 #calculate leave time
                 self.calculateLeaveTime()
@@ -132,4 +132,13 @@ class Controller:
 
     # calculates the start-time based on break-time, working-time and leave-time
     def calculateStartTime(self):
-        pass
+        # get all present minutes
+        presentMinutes = (self.model.intLeaveHours - self.model.intWorkingHours)*60
+        presentMinutes += self.model.intLeaveMinutes - self.model.intWorkingMinutes
+
+        # remove minutes for break-time (default: 50min)
+        presentMinutes -= (self.model.intBreakMinutes + self.model.intBreakHours*60)
+
+        # store start-time in model
+        self.model.intStartHours = int(presentMinutes / 60.0)
+        self.model.intStartMinutes = presentMinutes-(self.model.intStartHours*60)

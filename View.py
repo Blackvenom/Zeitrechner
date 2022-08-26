@@ -13,35 +13,6 @@ class View(ttk.Frame):
     _string_WorkingTime = ""
     _string_BreakTime = ""
 
-    def set_controller(self, controller):
-        self.controller = controller
-
-    def errorFree(self):
-        if(str(self.entry_StartTime['foreground']) == 'red' or
-           str(self.entry_LeaveTime['foreground']) == 'red' or
-           str(self.entry_WorkingTime['foreground']) == 'red'):
-            return False
-        else:
-            return True
-
-    def entryFocusLost(self, event):
-        # get text from correct entry
-        if(self.controller):
-            _string_EntryTime = ""
-            if(event.widget._name == 'startEntry'): _string_EntryTime = _string_StartTime.get()
-            elif(event.widget._name == 'leaveEntry'): _string_EntryTime = _string_LeaveTime.get()
-            elif(event.widget._name == 'workingEntry'): _string_EntryTime = _string_WorkingTime.get()
-            elif(event.widget._name == 'breakEntry'): _string_EntryTime = _string_BreakTime.get()
-
-            # check if entered values are in correct format
-            self.controller.checkEntryTime(event.widget._name, _string_EntryTime)
-            
-            if(self.errorFree()):
-                # check which calculation mode is needed
-                self.controller.doStateMachineMagic(_string_StartTime.get(), _string_LeaveTime.get(), _string_WorkingTime.get(), _string_BreakTime.get())
-                # calculate the needed time
-                self.controller.calculateTime()
-
     def __init__(self, parent):
         super().__init__(parent)
 
@@ -97,6 +68,35 @@ class View(ttk.Frame):
         self.entry_BreakTime.grid(column=1, row=3, sticky=tk.E, padx=5, pady=5)
 
         self.controller = None
+
+    def set_controller(self, controller):
+        self.controller = controller
+
+    def errorFree(self):
+        if(str(self.entry_StartTime['foreground']) == 'red' or
+           str(self.entry_LeaveTime['foreground']) == 'red' or
+           str(self.entry_WorkingTime['foreground']) == 'red'):
+            return False
+        else:
+            return True
+
+    def entryFocusLost(self, event):
+        # get text from correct entry
+        if(self.controller):
+            _string_EntryTime = ""
+            if(event.widget._name == 'startEntry'): _string_EntryTime = _string_StartTime.get()
+            elif(event.widget._name == 'leaveEntry'): _string_EntryTime = _string_LeaveTime.get()
+            elif(event.widget._name == 'workingEntry'): _string_EntryTime = _string_WorkingTime.get()
+            elif(event.widget._name == 'breakEntry'): _string_EntryTime = _string_BreakTime.get()
+
+            # check if entered values are in correct format
+            self.controller.checkEntryTime(event.widget._name, _string_EntryTime)
+            
+            if(self.errorFree()):
+                # check which calculation mode is needed
+                self.controller.doStateMachineMagic(_string_StartTime.get(), _string_LeaveTime.get(), _string_WorkingTime.get(), _string_BreakTime.get())
+                # calculate the needed time
+                self.controller.calculateTime()
 
     def reset_labels(self):
         # reset to non-bold labels
