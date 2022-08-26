@@ -16,8 +16,16 @@ class View(ttk.Frame):
     def set_controller(self, controller):
         self.controller = controller
 
+    def errorFree(self):
+        if(str(self.entry_StartTime['foreground']) == 'red' or
+           str(self.entry_LeaveTime['foreground']) == 'red' or
+           str(self.entry_WorkingTime['foreground']) == 'red'):
+            return False
+        else:
+            return True
+
     def entryFocusLost(self, event):
-        #get text from correct entry
+        # get text from correct entry
         if(self.controller):
             _string_EntryTime = ""
             if(event.widget._name == 'startEntry'): _string_EntryTime = _string_StartTime.get()
@@ -25,12 +33,14 @@ class View(ttk.Frame):
             elif(event.widget._name == 'workingEntry'): _string_EntryTime = _string_WorkingTime.get()
             elif(event.widget._name == 'breakEntry'): _string_EntryTime = _string_BreakTime.get()
 
-            #check if entered values are in correct format
+            # check if entered values are in correct format
             self.controller.checkEntryTime(event.widget._name, _string_EntryTime)
-
-            #check which calculation mode is needed
-            self.controller.doStateMachineMagic(_string_StartTime.get(), _string_LeaveTime.get(), _string_WorkingTime.get(), _string_BreakTime.get())
-            self.controller.calculateTime()
+            
+            if(self.errorFree()):
+                # check which calculation mode is needed
+                self.controller.doStateMachineMagic(_string_StartTime.get(), _string_LeaveTime.get(), _string_WorkingTime.get(), _string_BreakTime.get())
+                # calculate the needed time
+                self.controller.calculateTime()
 
     def __init__(self, parent):
         super().__init__(parent)

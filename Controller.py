@@ -20,6 +20,12 @@ class Controller:
     def state(self, value):
         if(value == State.IDLE):
             self.view.reset_labels()
+        elif(value == State.LEAVETIMEMODE):
+            self.view.highlight_label('leaveLabel')
+        elif(value == State.WORKINGTIMEMODE):
+            self.view.highlight_label('workingLabel')
+        elif(value == State.STARTTIMEMODE):
+            self.view.highlight_label('startLabel')
 
         self._state = value
 
@@ -27,7 +33,7 @@ class Controller:
         try:
             if(strTime):
                 # time-format 'hh:mm'
-                if(':' in strTime):
+                if(':' in strTime and len(strTime) == 5):
                     hours = int(strTime[:2])
                     minutes = int(strTime[3:])
                 # time-format 'hhmm'
@@ -72,13 +78,10 @@ class Controller:
                self.state = State.IDLE
             elif( _strStartTime and not _strLeaveTime and _strWorkingTime) or not _strBreakTime:
                 self.state = State.LEAVETIMEMODE
-                self.view.highlight_label('leaveLabel')
             elif( _strStartTime and _strLeaveTime and not _strWorkingTime):
                 self.state = State.WORKINGTIMEMODE
-                self.view.highlight_label('workingLabel')
             elif( not _strStartTime and not _strLeaveTime and not _strWorkingTime):
                 self.state = State.STARTTIMEMODE
-                self.view.highlight_label('startLabel')
 
     def calculateTime(self):
         try:
