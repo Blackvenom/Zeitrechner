@@ -91,8 +91,10 @@ class Controller:
                 print('todo: Modus: Start-Zeit ermitteln')
                 self.calculateStartTime()
             elif(self.state == State.LEAVETIMEMODE):
-                print('todo: Modus: Gehen-Zeit ermitteln')
+                #calculate leave time
                 self.calculateLeaveTime()
+                #output working time
+                self.view.show_time('leaveEntry', f"{str(self.model.intLeaveHours).rjust(2, '0')}:{str(self.model.intLeaveMinutes).rjust(2, '0')}")
             elif(self.state == State.WORKINGTIMEMODE):
                 #calculate working time
                 self.calculateWorkingTime()
@@ -104,20 +106,29 @@ class Controller:
     
     # calculates the working-time based on break-time, start-time and leave-time
     def calculateWorkingTime(self):
-        #Get all present minutes
+        # get all present minutes
         presentMinutes = (self.model.intLeaveHours - self.model.intStartHours)*60
         presentMinutes += self.model.intLeaveMinutes - self.model.intStartMinutes
 
-        #remove minutes for break-time (default: 50min)
+        # remove minutes for break-time (default: 50min)
         presentMinutes -= (self.model.intBreakMinutes + self.model.intBreakHours*60)
 
-        #store working-time in model
+        # store working-time in model
         self.model.intWorkingHours = int(presentMinutes / 60.0)
         self.model.intWorkingMinutes = presentMinutes-(self.model.intWorkingHours*60)
 
     # calculates the leave-time based on break-time, start-time and working-time
     def calculateLeaveTime(self):
-        pass
+        # get all present minutes
+        presentMinutes = (self.model.intStartHours + self.model.intWorkingHours)*60
+        presentMinutes += self.model.intStartMinutes + self.model.intWorkingMinutes
+
+        # add minutes for break-time (default: 50min)
+        presentMinutes += (self.model.intBreakMinutes + self.model.intBreakHours*60)
+
+        # store leave-time in model
+        self.model.intLeaveHours = int(presentMinutes / 60.0)
+        self.model.intLeaveMinutes = presentMinutes-(self.model.intLeaveHours*60)
 
     # calculates the start-time based on break-time, working-time and leave-time
     def calculateStartTime(self):
