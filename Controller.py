@@ -89,17 +89,20 @@ class Controller:
                 #calculate start time
                 self.calculateStartTime()
                 #output start time
-                self.view.show_time('startEntry', f"{str(self.model.intStartHours).rjust(2, '0')}:{str(self.model.intStartMinutes).rjust(2, '0')}")
+                if(self.model.intStartHours >= 0 and self.model.intStartMinutes >= 0):
+                    self.view.show_time('startEntry', f"{str(self.model.intStartHours).rjust(2, '0')}:{str(self.model.intStartMinutes).rjust(2, '0')}")
             elif(self.state == State.LEAVETIMEMODE):
                 #calculate leave time
                 self.calculateLeaveTime()
                 #output working time
-                self.view.show_time('leaveEntry', f"{str(self.model.intLeaveHours).rjust(2, '0')}:{str(self.model.intLeaveMinutes).rjust(2, '0')}")
+                if(self.model.intLeaveHours >= 0 and self.model.intLeaveMinutes >= 0):
+                    self.view.show_time('leaveEntry', f"{str(self.model.intLeaveHours).rjust(2, '0')}:{str(self.model.intLeaveMinutes).rjust(2, '0')}")
             elif(self.state == State.WORKINGTIMEMODE):
                 #calculate working time
                 self.calculateWorkingTime()
                 #output working time
-                self.view.show_time('workingEntry', f"{str(self.model.intWorkingHours).rjust(2, '0')}:{str(self.model.intWorkingMinutes).rjust(2, '0')}")
+                if(self.model.intWorkingHours >= 0 and self.model.intWorkingMinutes >= 0):
+                    self.view.show_time('workingEntry', f"{str(self.model.intWorkingHours).rjust(2, '0')}:{str(self.model.intWorkingMinutes).rjust(2, '0')}")
                 
         except ValueError as error:
             self.view.show_error(error)
